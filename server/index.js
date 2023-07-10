@@ -18,30 +18,66 @@ io.on("connection", (socket) => {
     socket.emit("connection", { id: socket.id });
 
     socket.on("createGame", (data) => {
-        const gameId = generateId();
-        socket.join(gameId);
+        try {
+            const username = data.username;
 
-        const game = {
-            id: gameId,
-            players: [],
-            quote: {},
-            quoteHistory: [],
-            quotesLeft: 20,
+            if(!username) return socket.emit("error", { error: { message: "No username provided." } })
+
+            const gameId = generateId();
+            socket.join(gameId);
+
+            const game = {
+                id: gameId,
+                players: [],
+                quote: {},
+                quoteHistory: [],
+                quotesLeft: 20,
+            }
+
+            const player = {
+                id: socket.id,
+                username: username,
+                points: 0,
+                isTurn: true // o criador da sala começa jogando
+            }
+
+            game.players.push(player);
+            const gameRoom = io.sockets.adapter.rooms.get(gameId);
+            gameRoom.game = game;
+
+            socket.emit("createGame", game);
+            console.log(`game ${gameId} created.`);
+            console.log(`player ${player.username} joined the game.`)
+        } catch (error) {
+            socket.emmit("error", error);
         }
+    })
 
-        const player1 = {
-            id: socket.id,
-            username: data.username,
-            points: 0,
-            isTurn: true
+    socket.on("joinGame", (data) => {
+        try {
+            const { username, gameId } = data;
+            const gameRoom = io.sockets.adapter.rooms.get(gameId);
+
+            if (!gameRoom) return socket.emit("error", { error: { message: "Game room not found;" } });
+
+            const game = gameRoom.game;
+
+            if (game.players.length  === 2) return socket.emit("error", { error: { message: "Game full." } });
+
+            const player = {
+                id: socket.id,
+                username: username,
+                points: 0,
+                isTurn: false // o player 2 não começa jogando
+            }
+
+            game.players.push(player);
+
+            socket.to(gameId).emit("joinGame", game)
+            console.log(`player ${player.username} joined the game.`)
+        } catch (error) {
+            socket.emmit("error", error)
         }
-
-        game.players.push(player1);
-        const gameRoom = io.sockets.adapter.rooms.get(gameId);
-        gameRoom.game = game;
-
-        socket.emit("createGame", game);
-        console.log(`game ${gameId} created.`)
     })
 })
 
@@ -54,4 +90,4 @@ server.listen(PORT, () => {
     console.log("server listening on localhost:", PORT);
 })
 
-module.exports = {server, io};
+module.exports = { server, io };
