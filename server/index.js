@@ -21,7 +21,7 @@ io.on("connection", (socket) => {
         try {
             const username = data.username;
 
-            if(!username) return socket.emit("error",{ message: "No username provided." })
+            if (!username) throw new Error("No username provided.");
 
             const gameId = generateId();
             socket.join(gameId);
@@ -49,7 +49,7 @@ io.on("connection", (socket) => {
             console.log(`game ${gameId} created.`);
             console.log(`player ${player.username} joined the game: ${gameId}`)
         } catch (error) {
-            socket.emmit("error", error);
+            socket.emit("error", error);
         }
     })
 
@@ -58,11 +58,11 @@ io.on("connection", (socket) => {
             const { username, gameId } = data;
             const gameRoom = io.sockets.adapter.rooms.get(gameId);
 
-            if (!gameRoom) return socket.emit("error", { error: { message: "Game room not found." } });
+            if (!gameRoom) throw new Error("Game room not found.")
 
             const game = gameRoom.game;
 
-            if (game.players.length  === 2) return socket.emit("error", { error: { message: "Game full." } });
+            if (game.players.length === 2) throw new Error("Game")
 
             const player = {
                 id: socket.id,
@@ -73,16 +73,73 @@ io.on("connection", (socket) => {
 
             game.players.push(player);
 
+            socket.join(gameId);
             socket.to(gameId).emit("joinGame", game)
             console.log(`player ${player.username} joined the game: ${game.id}`)
         } catch (error) {
-            socket.emmit("error", error)
+            socket.emit("error", error)
+        }
+    })
+
+    socket.on("startGame", async (data) => {
+        try {
+            const gameId = data.gameId;
+            const gameRoom = io.sockets.adapter.rooms.get(gameId);
+            const game = gameRoom.game;
+
+            const quote = await fetchQuote(game);
+            game.quote = quote
+            game.quoteHistory.push(quote);
+            game.quotesLeft--;
+            console.log(quote)
+
+            io.to(gameId).emit("update", game);
+            console.log(`game: ${gameId} started!`);
+            console.log("current state:", game);
+
+        } catch (error) {
+            socket.emit("error", error);
         }
     })
 })
 
 function generateId() {
     return uuidv4();
+}
+
+async function fetchQuote(game) {
+    try {
+        let allAuthors = ['Walter White', 'Saul Goodman', 'Jesse Pinkman', 'Walter White Jr', 'Skyler White',
+            'Gustavo Fring', 'Hank Schrader', 'Mike Ehrmantraut', 'The fly', 'Badger'];
+
+        const response = await axios.get('https://api.breakingbadquotes.xyz/v1/quotes');
+        const data = await response.data[0];
+
+        let frase = data.quote
+        let answer = data.author
+
+        for (let i = 0; i < game.quoteHistory.length; i++) { // verifica se a frase já foi usada
+            if (frase == game.quoteHistory[i].quote) return fetchQuote(game);
+        }
+
+        const answerIndex = allAuthors.indexOf(answer)
+        allAuthors.splice(answerIndex, 1)
+
+        for (let i = allAuthors.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [allAuthors[i], allAuthors[j]] = [allAuthors[j], allAuthors[i]];
+        }
+
+        const answerOptions = allAuthors.slice(0, 4);
+        answerOptions[Math.floor(Math.random() * 4)] = answer;
+
+        const quote = { quote: frase, answer: answer, answerOptions: answerOptions }
+        console.log(quote);
+        return quote
+    } catch (error) {
+        console.log(error)
+        return null
+    }
 }
 
 const PORT = 3001;
