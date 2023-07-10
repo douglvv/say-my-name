@@ -17,10 +17,9 @@ io.on("connection", (socket) => {
     console.log(`socket ${socket.id} connected.`);
     socket.emit("connection", { id: socket.id });
 
-    socket.on("createGame", (data) => {        
+    socket.on("createGame", (data) => {
         const gameId = generateId();
         socket.join(gameId);
-        const gameRoom = io.sockets.adapter.rooms.get(gameId);
 
         const game = {
             id: gameId,
@@ -38,10 +37,11 @@ io.on("connection", (socket) => {
         }
 
         game.players.push(player1);
-
+        const gameRoom = io.sockets.adapter.rooms.get(gameId);
         gameRoom.game = game;
 
         socket.emit("createGame", game);
+        console.log(`game ${gameId} created.`)
     })
 })
 
@@ -49,8 +49,9 @@ function generateId() {
     return uuidv4();
 }
 
-const PORT = 3000;
+const PORT = 3001;
 server.listen(PORT, () => {
     console.log("server listening on localhost:", PORT);
 })
 
+module.exports = {server, io};
