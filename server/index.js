@@ -21,7 +21,7 @@ io.on("connection", (socket) => {
         try {
             const username = data.username;
 
-            if(!username) return socket.emit("error", { error: { message: "No username provided." } })
+            if(!username) return socket.emit("error",{ message: "No username provided." })
 
             const gameId = generateId();
             socket.join(gameId);
@@ -47,7 +47,7 @@ io.on("connection", (socket) => {
 
             socket.emit("createGame", game);
             console.log(`game ${gameId} created.`);
-            console.log(`player ${player.username} joined the game.`)
+            console.log(`player ${player.username} joined the game: ${gameId}`)
         } catch (error) {
             socket.emmit("error", error);
         }
@@ -58,7 +58,7 @@ io.on("connection", (socket) => {
             const { username, gameId } = data;
             const gameRoom = io.sockets.adapter.rooms.get(gameId);
 
-            if (!gameRoom) return socket.emit("error", { error: { message: "Game room not found;" } });
+            if (!gameRoom) return socket.emit("error", { error: { message: "Game room not found." } });
 
             const game = gameRoom.game;
 
@@ -74,7 +74,7 @@ io.on("connection", (socket) => {
             game.players.push(player);
 
             socket.to(gameId).emit("joinGame", game)
-            console.log(`player ${player.username} joined the game.`)
+            console.log(`player ${player.username} joined the game: ${game.id}`)
         } catch (error) {
             socket.emmit("error", error)
         }
