@@ -9,10 +9,9 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server, {
     cors: {
-      origin: "http://127.0.0.1:5173"
+        origin: "http://127.0.0.1:5173"
     }
-  });
-  
+});
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -100,7 +99,6 @@ io.on("connection", (socket) => {
 
             io.to(gameId).emit("update", game);
             console.log(`game: ${gameId} started!`);
-            console.log("current state:", game);
 
         } catch (error) {
             socket.emit("error", error);
