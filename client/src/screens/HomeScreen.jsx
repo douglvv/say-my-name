@@ -16,7 +16,7 @@ const HomeScreen = () => {
         return () => {
             socket.off("connection", handleConnection);
         };
-    }, [socket]);
+    }, []);
 
     return (
         <Container className="d-flex justify-content-center align-items-center" fluid="sm">
