@@ -1,11 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    id: null,
-    players: [],
-    quote: {},
-    quoteHistory: [],
-    quotesLeft: null,
+    game: {
+        id: null,
+        players: [],
+        quote: {},
+        quoteHistory: [],
+        quotesLeft: null,
+    }
 }
 
 export const gameSlice = createSlice({
@@ -13,10 +15,11 @@ export const gameSlice = createSlice({
     initialState: initialState,
     reducers: {
         updateGameState: (state, action) => {
-            state = action.payload.game;
+            console.log("game state: ",action.payload.game)
+            state.game = action.payload.game;
         },
         finishGame: (state) => {
-            state = initialState;
+            state.game = initialState;
         }
     }
 });

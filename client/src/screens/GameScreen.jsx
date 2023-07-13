@@ -1,26 +1,27 @@
 import React, { useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { SocketContext } from "../contexts/SocketContext";
-
-
-// TODO: redux storage para o objeto do jogo
+import { useDispatch, useSelector } from "react-redux";
+import { updateGameState, finishGame } from "../redux/gameSlice";
 
 export default function GameScreen() {
     const { gameId } = useParams();
-    const game = JSON.parse(localStorage.getItem("game"));
+    const gameState = useSelector(state => state.game.game);
+    const dispatch = useDispatch();
     const socket = useContext(SocketContext);
 
     useEffect(() => {
-        socket.on("joinGame", (data) => {
+        // Outro jogador joina a partida
+        function handleJoinGame(data) {
             const updatedGame = data;
+            dispatch(updateGameState({ game: updatedGame }));
+        }
+        socket.on("joinGame", handleJoinGame);
 
-            localStorage.setItem("game", JSON.stringify(updatedGame))
-        })
-
-        return(() => {
-
-        })
-    },[socket, gameId])
+        return () => {
+            socket.off("joinGame", handleJoinGame);
+        };
+    }, [socket, gameId, dispatch, gameState]);
 
     return (
         <>
@@ -28,12 +29,12 @@ export default function GameScreen() {
             <h4>Game: {gameId}</h4>
 
             <ul>
-            {game.players.map((player) => (
+                {gameState.players.map((player) => (
                     <li key={player.id}>
                         <p>{player.username} connected.</p>
                     </li>
                 ))}
             </ul>
         </>
-    )
+    );
 }

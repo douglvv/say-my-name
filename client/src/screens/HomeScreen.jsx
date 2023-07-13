@@ -16,17 +16,13 @@ const HomeScreen = () => {
     function createGame(e) {
         e.preventDefault()
 
-        try {
-            socket.emit("createGame", { username: username });
-        } catch (error) {
-            console.log(error.message);
-        }
+        socket.emit("createGame", { username });
     }
 
     function joinGame(e) {
         e.preventDefault()
 
-        socket.emit("joinGame", {username: username, gameId: gameId});
+        socket.emit("joinGame", { username, gameId });
     }
 
     useEffect(() => {
@@ -38,38 +34,35 @@ const HomeScreen = () => {
 
         // Create game
         const handleCreateGame = (data) => {
-            console.log(data)
+            // console.log(data)
             const game = data;
-
-            localStorage.setItem("game", JSON.stringify(game));
-            dispatch(updateGameState({game: game}));
             
             navigate(`/game/${game.id}`);
+            
+            localStorage.setItem("game", JSON.stringify(game));
+            dispatch(updateGameState({ game: game }));
         };
-        socket.on("createGame", (data) => {
-            handleCreateGame(data);
-        });
+        socket.on("createGame", handleCreateGame);
 
         // Join game
         const handleJoinGame = (data) => {
-            console.log(data)
+            console.log("message received from server: ",data);
             const game = data;
 
+            navigate(`/game/${game.id}`);
+
             localStorage.setItem("game", JSON.stringify(game));
-            dispatch(updateGameState({game: game}));
-            
-            navigate(`game/${gameId}`);            
+            dispatch(updateGameState({ game: game }));            
         }
-        socket.on("joinGame", (data) => {
-            handleJoinGame(data);
-        })
+        socket.on("joinGame", handleJoinGame);
 
         return () => {
             socket.off("connection", handleConnection);
             socket.off("createGame", handleCreateGame);
             socket.off("joinGame", handleJoinGame);
         };
-    }, [socket, navigate]);
+    }, [socket, navigate, gameId, dispatch]);
+
 
     return (
         <Container fluid="sm">
@@ -87,7 +80,7 @@ const HomeScreen = () => {
                     />
                 </Form.Group>
 
-                <Button onClick={createGame} variant="primary" type="submit">
+                <Button onClick={createGame} variant="primary" type="button">
                     Create new game
                 </Button>
             </Form>
@@ -105,7 +98,7 @@ const HomeScreen = () => {
                     />
                 </Form.Group>
 
-                <Button onClick={joinGame} variant="primary" type="submit">
+                <Button onClick={joinGame} variant="primary" type="button">
                     Join existing game
                 </Button>
             </Form>
