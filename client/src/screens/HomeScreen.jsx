@@ -2,6 +2,8 @@ import React, { useEffect, useState, useContext } from "react";
 import { SocketContext } from "../contexts/SocketContext";
 import { Container, Form, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from 'react-redux'
+import { updateGameState } from '../redux/gameSlice';
 
 const HomeScreen = () => {
     const [isConnected, setIsConnected] = useState(false);
@@ -9,6 +11,7 @@ const HomeScreen = () => {
     const [gameId, setGameId] = useState("");
     const socket = useContext(SocketContext);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     function createGame(e) {
         e.preventDefault()
@@ -35,10 +38,12 @@ const HomeScreen = () => {
 
         // Create game
         const handleCreateGame = (data) => {
-            // console.log(data)
+            console.log(data)
             const game = data;
 
             localStorage.setItem("game", JSON.stringify(game));
+            dispatch(updateGameState({game: game}));
+            
             navigate(`/game/${game.id}`);
         };
         socket.on("createGame", (data) => {
@@ -51,7 +56,9 @@ const HomeScreen = () => {
             const game = data;
 
             localStorage.setItem("game", JSON.stringify(game));
-            navigate(`game/${gameId}`)
+            dispatch(updateGameState({game: game}));
+            
+            navigate(`game/${gameId}`);            
         }
         socket.on("joinGame", (data) => {
             handleJoinGame(data);

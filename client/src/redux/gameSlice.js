@@ -13,7 +13,7 @@ export const gameSlice = createSlice({
     initialState: initialState,
     reducers: {
         updateGameState: (state, action) => {
-            state = action.payload.game; 
+            state = action.payload.game;
         },
         finishGame: (state) => {
             state = initialState;
