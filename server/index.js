@@ -23,8 +23,8 @@ io.on("connection", (socket) => {
 
     socket.on("createGame", (data) => {
         try {
-            console.log("create message:",data)
-            const username = data.username;
+            console.log("create message:", data)
+            const username = data.username.trim();
 
             if (!username) return socket.emit("error", { message: "No username provided." })
 
@@ -50,9 +50,10 @@ io.on("connection", (socket) => {
             const gameRoom = io.sockets.adapter.rooms.get(gameId);
             gameRoom.game = game;
 
+            // socket.emit("player", player)
             socket.emit("createGame", game);
-            console.log(`game ${gameId} created.`);
-            console.log(`player ${player.username} joined the game: ${gameId}`)
+            // console.log("CREATE_GAME: player:",player);
+            console.log("CREATE_GAME: game:",game);
         } catch (error) {
             socket.emit("error", error);
         }
@@ -60,13 +61,13 @@ io.on("connection", (socket) => {
 
     socket.on("joinGame", (data) => {
         try {
-            console.log("join message:",data)
+            console.log("join message:", data)
             const { username, gameId } = data;
-            
+
             const gameRoom = io.sockets.adapter.rooms.get(gameId);
 
             if (!gameRoom) return socket.emit("error", { message: "Game room not found." })
-            
+
             socket.join(gameId);
 
             const game = gameRoom.game;
@@ -81,9 +82,11 @@ io.on("connection", (socket) => {
             }
 
             game.players.push(player);
-         
-            io.to(gameId).emit("joinGame", game)
-            console.log(`player ${player.username} joined the game: ${game.id}`)
+
+            // socket.emit("player", player)
+            io.to(gameId).emit("joinGame", game )
+            // console.log("JOIN_GAME: player:",player);
+            console.log("JOIN_GAME: game:",game);
         } catch (error) {
             socket.emit("error", { message: error.message });
         }
@@ -91,6 +94,7 @@ io.on("connection", (socket) => {
 
     socket.on("startGame", async (data) => {
         try {
+            console.log("startgame")
             const gameId = data.gameId;
             const gameRoom = io.sockets.adapter.rooms.get(gameId);
             const game = gameRoom.game;
@@ -99,11 +103,10 @@ io.on("connection", (socket) => {
             game.quote = quote
             game.quoteHistory.push(quote);
             game.quotesLeft--;
-            console.log(quote)
+            console.log(game);
 
+            io.to(gameId).emit("startGame");
             io.to(gameId).emit("update", game);
-            console.log(`game: ${gameId} started!`);
-
         } catch (error) {
             socket.emit("error", { message: error.message });
         }
@@ -125,7 +128,7 @@ async function fetchQuote(game) {
         let frase = data.quote
         let answer = data.author
 
-        for (let i = 0; i < game.quoteHistory.length; i++) { // verifica se a frase já foi usada
+        for (let i = 0; i < game.quoteHistory.length -1 ; i++) { // verifica se a frase já foi usada
             if (frase == game.quoteHistory[i].quote) return fetchQuote(game);
         }
 
@@ -141,7 +144,6 @@ async function fetchQuote(game) {
         answerOptions[Math.floor(Math.random() * 4)] = answer;
 
         const quote = { quote: frase, answer: answer, answerOptions: answerOptions }
-        console.log(quote);
         return quote
     } catch (error) {
         console.log(error)

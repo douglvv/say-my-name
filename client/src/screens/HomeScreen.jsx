@@ -2,8 +2,8 @@ import React, { useEffect, useState, useContext } from "react";
 import { SocketContext } from "../contexts/SocketContext";
 import { Container, Form, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from 'react-redux'
-import { updateGameState } from '../redux/gameSlice';
+import { useDispatch, useSelector } from 'react-redux'
+import { updateGameState, updatePlayerState, setPlayerId } from '../redux/gameSlice';
 
 const HomeScreen = () => {
     const [isConnected, setIsConnected] = useState(false);
@@ -12,6 +12,7 @@ const HomeScreen = () => {
     const socket = useContext(SocketContext);
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const playerState = useSelector((state) => state.game.player);
 
     function createGame(e) {
         e.preventDefault()
@@ -27,41 +28,57 @@ const HomeScreen = () => {
 
     useEffect(() => {
         // Connection
-        const handleConnection = () => {
+        const handleConnection = (data) => {
+            const id = data.id;
+
             setIsConnected(true);
+            dispatch(setPlayerId({ id: id }));
         };
         socket.on("connection", handleConnection);
 
         // Create game
         const handleCreateGame = (data) => {
-            // console.log(data)
             const game = data;
-            
+
+            game.players.map((player) => {
+                if (player.id == playerState.id) { dispatch(updatePlayerState({ player: player }))};
+            })
+
             navigate(`/game/${game.id}`);
-            
-            localStorage.setItem("game", JSON.stringify(game));
-            dispatch(updateGameState({ game: game }));
+            dispatch(updateGameState({ game }));
         };
         socket.on("createGame", handleCreateGame);
 
+        // // Update player
+        // const handleUpdatePlayer = (data) => {
+        //     const player = data;
+
+        //     localStorage.setItem("player", JSON.stringify(player));
+        //     dispatch(updatePlayerState(player));
+        // }
+        // socket.on("player", handleUpdatePlayer);
+
         // Join game
         const handleJoinGame = (data) => {
-            console.log("message received from server: ",data);
             const game = data;
 
-            navigate(`/game/${game.id}`);
+            game.players.map((player) => {
+                if (player.id == playerState.id) { dispatch(updatePlayerState({ player: player }))};
+            })
 
-            localStorage.setItem("game", JSON.stringify(game));
-            dispatch(updateGameState({ game: game }));            
+            navigate(`/game/${game.id}`);
+            dispatch(updateGameState({ game }));
         }
         socket.on("joinGame", handleJoinGame);
+
 
         return () => {
             socket.off("connection", handleConnection);
             socket.off("createGame", handleCreateGame);
             socket.off("joinGame", handleJoinGame);
+            // socket.off("player", handleUpdatePlayer);
         };
-    }, [socket, navigate, gameId, dispatch]);
+    }, [socket, navigate, gameId, dispatch, playerState]);
 
 
     return (

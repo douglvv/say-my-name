@@ -1,40 +1,95 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { SocketContext } from "../contexts/SocketContext";
 import { useDispatch, useSelector } from "react-redux";
-import { updateGameState, finishGame } from "../redux/gameSlice";
+import { updateGameState, finishGame, updatePlayerState } from "../redux/gameSlice";
 
 export default function GameScreen() {
     const { gameId } = useParams();
-    const gameState = useSelector(state => state.game.game);
+    const gameState = useSelector((state) => state.game.game);
+    const playerState = useSelector((state) => state.game.player);
     const dispatch = useDispatch();
     const socket = useContext(SocketContext);
+    const [hasGameStarted, setHasGameStarted] = useState(false);
+
+
+    function startGame() {
+        if (
+            gameState.players.length === 2 &&
+            playerState.isTurn &&
+            hasGameStarted === false
+        ) {
+            socket.emit("startGame", { gameId: gameId });
+            console.log(`${playerState.id} message sent: start`);
+        }
+    }
 
     useEffect(() => {
-        // Outro jogador joina a partida
-        function handleJoinGame(data) {
+        const handleJoinGame = (data) => {
             const updatedGame = data;
             dispatch(updateGameState({ game: updatedGame }));
         }
-        socket.on("joinGame", handleJoinGame);
+        const handleUpdateGame = (data) => {
+            const updatedGame = data;
 
-        return () => {
-            socket.off("joinGame", handleJoinGame);
+            updatedGame.players.forEach((player) => {
+                if (player.id == playerState.id) dispatch(updatePlayerState({ player: player }));
+            })
+
+            dispatch(updateGameState({ game: updatedGame }));
+        }
+        const handleStartGame = () => {
+            setHasGameStarted(true);
         };
-    }, [socket, gameId, dispatch, gameState]);
+
+        socket.on("joinGame", handleJoinGame);
+        socket.on("update", handleUpdateGame);
+        socket.on("startGame", handleStartGame);
+
+        return (() => {
+            socket.off("joinGame", handleJoinGame)
+            socket.off("update", handleUpdateGame);
+            socket.off("startGame", handleStartGame);
+        })
+    }, [socket, dispatch, gameId, gameState, playerState])
+
+    useEffect(() => {
+        startGame();
+    }, [gameState.players.length])
 
     return (
         <>
             <h1>Game Screen</h1>
             <h4>Game: {gameId}</h4>
 
-            <ul>
-                {gameState.players.map((player) => (
-                    <li key={player.id}>
-                        <p>{player.username} connected.</p>
-                    </li>
-                ))}
-            </ul>
+
+
+            {hasGameStarted ?
+                <div id="game">
+                    <h4>{gameState.players[0].username}  | {gameState.players[0].points} points</h4>
+                    <h4>{gameState.players[1].username}  | {gameState.players[1].points} points</h4>
+
+                    <h3>{gameState.quote.quote}</h3>
+                    <ul>
+                        {/* {gameState.quote.answerOptions.map((option, i) => (
+                            <li key={i}>
+                                <p>{option}</p>
+                            </li>
+                        ))} */}
+                    </ul>
+                </div>
+                :
+                <ul> // TODO: ajeitar esse map
+                    {gameState.players.map((player) => (
+                        <li key={player.id}>
+                            <p>{player.username} connected.</p>
+                        </li>
+                    ))}
+                </ul>
+            }
+
+            <br />
+            <hr />
         </>
-    );
+    )
 }
