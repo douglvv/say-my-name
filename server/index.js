@@ -18,12 +18,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 io.on("connection", (socket) => {
-    console.log(`socket ${socket.id} connected.`);
+    // console.log(`socket ${socket.id} connected.`);
     socket.emit("connection", { id: socket.id });
 
     socket.on("createGame", (data) => {
         try {
-            console.log("create message:", data)
+            // console.log("create message:", data)
             const username = data.username.trim();
 
             if (!username) return socket.emit("error", { message: "No username provided." })
@@ -52,8 +52,8 @@ io.on("connection", (socket) => {
 
             // socket.emit("player", player)
             socket.emit("createGame", game);
-            // console.log("CREATE_GAME: player:",player);
-            console.log("CREATE_GAME: game:",game);
+            // // console.log("CREATE_GAME: player:",player);
+            // console.log("CREATE_GAME: game:",game);
         } catch (error) {
             socket.emit("error", error);
         }
@@ -61,7 +61,7 @@ io.on("connection", (socket) => {
 
     socket.on("joinGame", (data) => {
         try {
-            console.log("join message:", data)
+            // console.log("join message:", data)
             const { username, gameId } = data;
 
             const gameRoom = io.sockets.adapter.rooms.get(gameId);
@@ -85,8 +85,8 @@ io.on("connection", (socket) => {
 
             // socket.emit("player", player)
             io.to(gameId).emit("joinGame", game )
-            // console.log("JOIN_GAME: player:",player);
-            console.log("JOIN_GAME: game:",game);
+            // // console.log("JOIN_GAME: player:",player);
+            // console.log("JOIN_GAME: game:",game);
         } catch (error) {
             socket.emit("error", { message: error.message });
         }
@@ -94,7 +94,7 @@ io.on("connection", (socket) => {
 
     socket.on("startGame", async (data) => {
         try {
-            console.log("startgame")
+            // // console.log("startgame")
             const gameId = data.gameId;
             const gameRoom = io.sockets.adapter.rooms.get(gameId);
             const game = gameRoom.game;
@@ -103,7 +103,7 @@ io.on("connection", (socket) => {
             game.quote = quote
             game.quoteHistory.push(quote);
             game.quotesLeft--;
-            console.log(game);
+            // // console.log(game);
 
             io.to(gameId).emit("startGame");
             io.to(gameId).emit("update", game);
@@ -146,7 +146,7 @@ async function fetchQuote(game) {
         const quote = { quote: frase, answer: answer, answerOptions: answerOptions }
         return quote
     } catch (error) {
-        console.log(error)
+        console.log(error.message)
         return null
     }
 }
