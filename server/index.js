@@ -28,7 +28,7 @@ io.on("connection", (socket) => {
 
             if (!username) return socket.emit("error", { message: "No username provided." })
 
-            const gameId = generateId();
+            const gameId = uuidv4();
             socket.join(gameId);
 
             const game = {
@@ -84,7 +84,7 @@ io.on("connection", (socket) => {
             game.players.push(player);
 
             // socket.emit("player", player)
-            io.to(gameId).emit("joinGame", game )
+            io.to(gameId).emit("joinGame", game)
             // // console.log("JOIN_GAME: player:",player);
             // console.log("JOIN_GAME: game:",game);
         } catch (error) {
@@ -111,11 +111,26 @@ io.on("connection", (socket) => {
             socket.emit("error", { message: error.message });
         }
     })
-})
 
-function generateId() {
-    return uuidv4();
-}
+    socket.on("answer", async (data) => {
+        const gameId = data.gameId;
+        const game = io.sockets.adapter.rooms.get(gameId).game;
+        const players = game.players;
+
+        players.forEach((player) => { // Altera os turnos
+            player.isTurn = !player.isTurn;
+        })
+
+        if (game.quotesLeft == 0) return io.to(gameId).emit("finish", game);
+
+        const quote = await fetchQuote(game);
+        game.quote = quote
+        game.quoteHistory.push(quote);
+        game.quotesLeft--;
+
+        io.to(gameId).emit("update", game);
+    })
+})
 
 async function fetchQuote(game) {
     try {
@@ -128,7 +143,7 @@ async function fetchQuote(game) {
         let frase = data.quote
         let answer = data.author
 
-        for (let i = 0; i < game.quoteHistory.length -1 ; i++) { // verifica se a frase já foi usada
+        for (let i = 0; i < game.quoteHistory.length - 1; i++) { // verifica se a frase já foi usada
             if (frase == game.quoteHistory[i].quote) return fetchQuote(game);
         }
 
