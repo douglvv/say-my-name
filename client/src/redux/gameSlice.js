@@ -26,12 +26,12 @@ export const gameSlice = createSlice({
         },
         setPlayerId: (state, action) => {
             state.player.id = action.payload.id;
-            console.log(state.player.id);                        
+            // console.log(state.player.id);                        
             localStorage.setItem("player", JSON.stringify(state.player));
         },
         updatePlayerState: (state, action) => {
             state.player = action.payload.player;
-            console.log(state.player);            
+            // console.log(state.player);            
             localStorage.setItem("player", JSON.stringify(action.payload.player))
         },
         finishGame: (state) => {

@@ -64,29 +64,32 @@ export default function GameScreen() {
 
 
 
-            {hasGameStarted ?
+            {hasGameStarted ? (
                 <div id="game">
-                    <h4>{gameState.players[0].username}  | {gameState.players[0].points} points</h4>
-                    <h4>{gameState.players[1].username}  | {gameState.players[1].points} points</h4>
+                    <h4>{gameState.players[0].username} | {gameState.players[0].points} points</h4>
+                    <h4>{gameState.players[1].username} | {gameState.players[1].points} points</h4>
 
                     <h3>{gameState.quote.quote}</h3>
                     <ul>
-                        {/* {gameState.quote.answerOptions.map((option, i) => (
-                            <li key={i}>
-                                <p>{option}</p>
-                            </li>
-                        ))} */}
+                        {gameState.quote.answerOptions && gameState.quote.answerOptions.length > 0 && (
+                            gameState.quote.answerOptions.map((option, index) => (
+                                <li key={index}>
+                                    <p>{option}</p>
+                                </li>
+                            ))
+                        )}
                     </ul>
                 </div>
-                :
-                <ul> // TODO: ajeitar esse map
+            ) : (
+                <ul>
                     {gameState.players.map((player) => (
                         <li key={player.id}>
                             <p>{player.username} connected.</p>
                         </li>
                     ))}
                 </ul>
-            }
+            )}
+
 
             <br />
             <hr />
