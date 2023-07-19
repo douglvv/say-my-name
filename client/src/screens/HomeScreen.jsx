@@ -80,46 +80,47 @@ const HomeScreen = () => {
         };
     }, [socket, navigate, gameId, dispatch, playerState]);
 
-
     return (
-        <Container fluid="sm">
-            {isConnected ? <p>Connected to socket.io server</p> : <p>Disconnected from socket.io server</p>}
-            <br />
-            <Form>
-                <Form.Group className="mb-3" controlId="username">
-                    <Form.Label>Username</Form.Label>
-                    <Form.Control
-                        type="text"
-                        placeholder="Enter username"
-                        required={true}
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                    />
-                </Form.Group>
+        <div id="menu">
+            <Container fluid="sm" className="menu-container">
+                {isConnected ? <p>Connected to socket.io server</p> : <p>Disconnected from socket.io server</p>}
+                <br />
+                <Form>
+                    <Form.Group className="mb-3" controlId="username">
+                        <Form.Label>Username</Form.Label>
+                        <Form.Control
+                            type="text"
+                            placeholder="Enter username"
+                            required={true}
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                        />
+                    </Form.Group>
 
-                <Button onClick={createGame} variant="primary" type="button">
-                    Create new game
-                </Button>
-            </Form>
-            <br />
-            <hr />
-            <Form>
-                <Form.Group className="mb-3" controlId="gameId">
-                    <Form.Label>Game id</Form.Label>
-                    <Form.Control
-                        type="text"
-                        placeholder="Enter game id"
-                        required={true}
-                        value={gameId}
-                        onChange={(e) => setGameId(e.target.value)}
-                    />
-                </Form.Group>
+                    <Button onClick={createGame} variant="primary" type="button">
+                        Create new game
+                    </Button>
+                </Form>
+                <br />
+                <hr />
+                <Form>
+                    <Form.Group className="mb-3" controlId="gameId">
+                        <Form.Label>Game id</Form.Label>
+                        <Form.Control
+                            type="text"
+                            placeholder="Enter game id"
+                            required={true}
+                            value={gameId}
+                            onChange={(e) => setGameId(e.target.value)}
+                        />
+                    </Form.Group>
 
-                <Button onClick={joinGame} variant="primary" type="button">
-                    Join existing game
-                </Button>
-            </Form>
-        </Container>
+                    <Button onClick={joinGame} variant="primary" type="button">
+                        Join existing game
+                    </Button>
+                </Form>
+            </Container>
+        </div>
     );
 };
 
