@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { SocketContext } from "../contexts/SocketContext";
-import { Container, Form, Button, Col, Row } from "react-bootstrap";
+import { InputGroup, Form, Button, Col, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux'
 import { updateGameState, updatePlayerState, setPlayerId } from '../redux/gameSlice';
@@ -82,49 +82,50 @@ const HomeScreen = () => {
 
     return (
         <div className="d-flex justify-content-center align-items-center vh-100">
-            {/* <Container fluid="sm" > */}
-            <Row sm={1} className="menu-container">
+            <Row sm={1} className="menu-container m-3 p-3">
                 <Col >
                     <h1 className="title">Say my Name</h1>
-                    {isConnected ? <p>Connected to socket.io server</p> : <p>Disconnected from socket.io server</p>}
-                    <br />
                     <Form>
                         <Form.Group className="mb-3" controlId="username">
-                            <Form.Label>Username</Form.Label>
                             <Form.Control
                                 type="text"
-                                placeholder="Enter username"
+                                placeholder="Username"
                                 required={true}
+                                maxLength={20}
                                 value={username}
+                                size="lg"
                                 onChange={(e) => setUsername(e.target.value)}
                             />
                         </Form.Group>
 
-                        <Button onClick={createGame} variant="primary" type="button">
-                            Create new game
-                        </Button>
+                        <div className="d-grid gap-2 mb-3">
+                            <Button onClick={createGame} variant="primary" size="lg" type="submit">
+                                Create new game
+                            </Button>
+                        </div>
+
                     </Form>
-                    <br />
-                    <hr />
                     <Form>
-                        <Form.Group className="mb-3" controlId="gameId">
-                            <Form.Label>Game id</Form.Label>
+                        <InputGroup className="mb-3" controlId="gameId">
                             <Form.Control
                                 type="text"
-                                placeholder="Enter game id"
+                                placeholder="Game ID"
                                 required={true}
+                                size="lg"
                                 value={gameId}
                                 onChange={(e) => setGameId(e.target.value)}
                             />
-                        </Form.Group>
-
-                        <Button onClick={joinGame} variant="primary" type="button">
-                            Join existing game
-                        </Button>
+                            <Button onClick={joinGame} variant="primary" type="button">
+                                Join existing game
+                            </Button>
+                        </InputGroup>
                     </Form>
+                    {isConnected
+                        ? <p className="text-end small text-success">Connection to socket.io server successful</p>
+                        : <p className="text-end small text-danger">Connection to socket.io server failed</p>
+                    }
                 </Col>
             </Row>
-            {/* </Container> */}
         </div>
     );
 };
