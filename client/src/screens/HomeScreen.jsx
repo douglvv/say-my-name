@@ -110,7 +110,7 @@ const HomeScreen = () => {
                         <InputGroup className="mb-3" controlId="gameId">
                             <Form.Control
                                 type="text"
-                                placeholder="Enter game id"
+                                placeholder="Game ID"
                                 required={true}
                                 size="lg"
                                 value={gameId}
