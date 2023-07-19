@@ -41,8 +41,8 @@ const HomeScreen = () => {
             const game = data;
 
             game.players.map((player) => {
-                if (player.id == playerState.id) { dispatch(updatePlayerState({ player: player }))};
-            })
+                if (player.id == playerState.id) { dispatch(updatePlayerState({ player: player })) };
+            });
 
             navigate(`/game/${game.id}`);
             dispatch(updateGameState({ game }));
@@ -63,7 +63,7 @@ const HomeScreen = () => {
             const game = data;
 
             game.players.map((player) => {
-                if (player.id == playerState.id) { dispatch(updatePlayerState({ player: player }))};
+                if (player.id == playerState.id) { dispatch(updatePlayerState({ player: player })) };
             })
 
             navigate(`/game/${game.id}`);
