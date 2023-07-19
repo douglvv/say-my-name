@@ -82,6 +82,7 @@ const HomeScreen = () => {
 
     return (
         <div className="d-flex justify-content-center align-items-center vh-100">
+            {/* <Container fluid="sm" > */}
             <Row sm={1} className="menu-container m-3 p-3">
                 <Col >
                     <h1 className="title">Say my Name</h1>
@@ -98,8 +99,8 @@ const HomeScreen = () => {
                             />
                         </Form.Group>
 
-                        <div className="d-grid gap-2 mb-3">
-                            <Button onClick={createGame} variant="primary" size="lg" type="submit">
+                        <div className="d-grid mb-3">
+                            <Button onClick={createGame} variant="primary" type="submit" size="lg">
                                 Create new game
                             </Button>
                         </div>
@@ -109,11 +110,13 @@ const HomeScreen = () => {
                         <InputGroup className="mb-3" controlId="gameId">
                             <Form.Control
                                 type="text"
-                                placeholder="Game ID"
+                                placeholder="Enter game id"
                                 required={true}
                                 size="lg"
                                 value={gameId}
                                 onChange={(e) => setGameId(e.target.value)}
+                                aria-label="Recipient's username"
+                                aria-describedby="basic-addon2"
                             />
                             <Button onClick={joinGame} variant="primary" type="button">
                                 Join existing game
@@ -126,6 +129,7 @@ const HomeScreen = () => {
                     }
                 </Col>
             </Row>
+            {/* </Container> */}
         </div>
     );
 };
