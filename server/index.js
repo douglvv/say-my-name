@@ -18,13 +18,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 io.on("connection", (socket) => {
-    // console.log(`socket ${socket.id} connected.`);
+    console.log(`socket ${socket.id} connected.`);
     socket.emit("connection", { id: socket.id });
 
     socket.on("createGame", (data) => {
         try {
             // console.log("create message:", data)
-            const username = data.username.trim();
+            const username = data.username;
 
             if (!username) return socket.emit("error", { message: "No username provided." })
 
@@ -51,9 +51,8 @@ io.on("connection", (socket) => {
             gameRoom.game = game;
 
             // socket.emit("player", player)
-            socket.emit("createGame", game);
-            // // console.log("CREATE_GAME: player:",player);
-            // console.log("CREATE_GAME: game:",game);
+            socket.emit("createGame", game);            
+            console.log("CREATE_GAME: game:",game);
         } catch (error) {
             socket.emit("error", error);
         }
@@ -61,13 +60,13 @@ io.on("connection", (socket) => {
 
     socket.on("joinGame", (data) => {
         try {
-            // console.log("join message:", data)
-            const { username, gameId } = data.trim();
+            console.log("join message:", data)
+            const { username, gameId } = data;
 
             const gameRoom = io.sockets.adapter.rooms.get(gameId);
 
-            if (!gameRoom) return socket.emit("error", { message: "Game room not found." })
-            if (!username) return socket.emit("error", { message: "No username provided." })
+            if (!gameRoom) return socket.emit("error", { message: "Game room not found." });
+            if (!username) return socket.emit("error", { message: "No username provided." });
 
             socket.join(gameId);
 
@@ -86,7 +85,7 @@ io.on("connection", (socket) => {
 
             // socket.emit("player", player)
             io.to(gameId).emit("joinGame", game)
-            // // console.log("JOIN_GAME: player:",player);
+            console.log("JOIN_GAME: player:",player);
             // console.log("JOIN_GAME: game:",game);
         } catch (error) {
             socket.emit("error", { message: error.message });
