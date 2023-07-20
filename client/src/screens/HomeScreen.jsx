@@ -9,6 +9,8 @@ const HomeScreen = () => {
     const [isConnected, setIsConnected] = useState(false);
     const [username, setUsername] = useState("")
     const [gameId, setGameId] = useState("");
+    const [error, setError] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("");
     const socket = useContext(SocketContext);
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -71,6 +73,14 @@ const HomeScreen = () => {
         }
         socket.on("joinGame", handleJoinGame);
 
+        const handleError = (data) => {
+            const message = data;
+            console.log(message)
+
+            setError(true);
+            setErrorMsg(message);
+        }
+
 
         return () => {
             socket.off("connection", handleConnection);
@@ -81,8 +91,7 @@ const HomeScreen = () => {
     }, [socket, navigate, gameId, dispatch, playerState]);
 
     return (
-        <div className="d-flex justify-content-center align-items-center vh-100">
-            {/* <Container fluid="sm" > */}
+        <div className="d-flex justify-content-center align-items-center vh-100">           
             <Row sm={1} className="menu-container m-3 p-3">
                 <Col >
                     <h1 className="title">Say my Name</h1>
@@ -91,7 +100,7 @@ const HomeScreen = () => {
                             <Form.Control
                                 type="text"
                                 placeholder="Username"
-                                required={true}
+                                // required={true}
                                 maxLength={20}
                                 value={username}
                                 size="lg"
@@ -111,7 +120,7 @@ const HomeScreen = () => {
                             <Form.Control
                                 type="text"
                                 placeholder="Game ID"
-                                required={true}
+                                // required={true}
                                 size="lg"
                                 value={gameId}
                                 onChange={(e) => setGameId(e.target.value)}
@@ -123,13 +132,13 @@ const HomeScreen = () => {
                             </Button>
                         </InputGroup>
                     </Form>
+                    {error && <p className="text-start small text-danger">{errorMsg}</p>}
                     {isConnected
                         ? <p className="text-end small text-success">Connection to socket.io server successful</p>
                         : <p className="text-end small text-danger">Connection to socket.io server failed</p>
                     }
                 </Col>
             </Row>
-            {/* </Container> */}
         </div>
     );
 };

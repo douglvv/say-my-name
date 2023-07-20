@@ -62,11 +62,12 @@ io.on("connection", (socket) => {
     socket.on("joinGame", (data) => {
         try {
             // console.log("join message:", data)
-            const { username, gameId } = data;
+            const { username, gameId } = data.trim();
 
             const gameRoom = io.sockets.adapter.rooms.get(gameId);
 
             if (!gameRoom) return socket.emit("error", { message: "Game room not found." })
+            if (!username) return socket.emit("error", { message: "No username provided." })
 
             socket.join(gameId);
 
