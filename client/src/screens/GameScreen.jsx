@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import Scoreboard from "../components/Scoreboard/Scoreboard";
 import { useParams } from "react-router-dom";
 import { SocketContext } from "../contexts/SocketContext";
 import { useDispatch, useSelector } from "react-redux";
@@ -62,23 +63,24 @@ export default function GameScreen() {
         <>
             <Container className="">
                 {hasGameStarted ? (
-                    <div className="justify-content-between m-3">
-                        <Row sm={1}>
-                            <Col sm={4} className="text-center p-2">
-                                <h2 className="username">{gameState.players[0].username}</h2>
-                            </Col>
-                            <Col sm={4} className="text-center p-2">
-                                {gameState.players.map((player) => (
-                                    player.isTurn ?
-                                        <h4 key={player.id}> {player.username}'s turn</h4> :
-                                        null
-                                ))}
-                            </Col>
-                            <Col sm={4} className="text-center p-2">
-                                <h2 className="username">{gameState.players[1].username}</h2>
-                            </Col>
-                        </Row>
-                    </div>
+                    <Scoreboard />
+                    // <div className="justify-content-between m-3">
+                    //     <Row sm={1}>
+                    //         <Col sm={4} className="text-center p-2">
+                    //             <h2 className="username">{gameState.players[0].username}</h2>
+                    //         </Col>
+                    //         <Col sm={4} className="text-center p-2">
+                    //             {gameState.players.map((player) => (
+                    //                 player.isTurn ?
+                    //                     <h4 key={player.id}> {player.username}'s turn</h4> :
+                    //                     null
+                    //             ))}
+                    //         </Col>
+                    //         <Col sm={4} className="text-center p-2">
+                    //             <h2 className="username">{gameState.players[1].username}</h2>
+                    //         </Col>
+                    //     </Row>
+                    // </div>
                 ) : (
                     <ul>
                         {gameState.players.map((player) => (
