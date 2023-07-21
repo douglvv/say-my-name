@@ -41,23 +41,6 @@ const HomeScreen = () => {
                                 Join existing game
                             </Button>
                         </div>
-                    {/* <Form>
-                        <InputGroup className="mb-3" controlId="gameId">
-                            <Form.Control
-                                type="text"
-                                placeholder="Game ID"
-                                required={true}
-                                size="lg"
-                                value={gameId}
-                                onChange={(e) => setGameId(e.target.value)}
-                                aria-label="Recipient's username"
-                                aria-describedby="basic-addon2"
-                            />
-                            <Button onClick={joinGame} variant="primary" type="button">
-                                Join existing game
-                            </Button>
-                        </InputGroup>
-                    </Form> */}
                     {isConnected
                         ? <p className="text-end small text-success">Connection to socket.io server successful</p>
                         : <p className="text-end small text-danger">Connection to socket.io server failed</p>

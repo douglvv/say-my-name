@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { SocketContext } from "../contexts/SocketContext";
 import { useDispatch, useSelector } from "react-redux";
 import { updateGameState, finishGame, updatePlayerState } from "../redux/gameSlice";
+import { Container, Row, Col, Badge, Card } from 'react-bootstrap'
 
 export default function GameScreen() {
     const { gameId } = useParams();
@@ -59,40 +60,37 @@ export default function GameScreen() {
 
     return (
         <>
-            <h1>Game Screen</h1>
-            <h4>Game: {gameId}</h4>
-
-
-
-            {hasGameStarted ? (
-                <div id="game">
-                    <h4>{gameState.players[0].username} | {gameState.players[0].points} points</h4>
-                    <h4>{gameState.players[1].username} | {gameState.players[1].points} points</h4>
-
-                    <h3>{gameState.quote.quote}</h3>
+            <Container className="">
+                {hasGameStarted ? (
+                    <div className="justify-content-between m-3">
+                        <Row sm={1}>
+                            <Col sm={4} className="text-center p-2">
+                                <h2 className="username">{gameState.players[0].username}</h2>
+                            </Col>
+                            <Col sm={4} className="text-center p-2">
+                                {gameState.players.map((player) => (
+                                    player.isTurn ?
+                                        <h4 key={player.id}> {player.username}'s turn</h4> :
+                                        null
+                                ))}
+                            </Col>
+                            <Col sm={4} className="text-center p-2">
+                                <h2 className="username">{gameState.players[1].username}</h2>
+                            </Col>
+                        </Row>
+                    </div>
+                ) : (
                     <ul>
-                        {gameState.quote.answerOptions && gameState.quote.answerOptions.length > 0 && (
-                            gameState.quote.answerOptions.map((option, index) => (
-                                <li key={index}>
-                                    <p>{option}</p>
-                                </li>
-                            ))
-                        )}
+                        {gameState.players.map((player) => (
+                            <li key={player.id}>
+                                <p>{player.username} connected.</p>
+                            </li>
+                        ))}
                     </ul>
-                </div>
-            ) : (
-                <ul>
-                    {gameState.players.map((player) => (
-                        <li key={player.id}>
-                            <p>{player.username} connected.</p>
-                        </li>
-                    ))}
-                </ul>
-            )}
+                )}
+            </Container>
 
 
-            <br />
-            <hr />
         </>
     )
 }

@@ -10,6 +10,7 @@ body {
   background-size: cover;
   background-position-x: center;
   background-position-y: center;
+  height: 100%;
 }
 
 .title {
@@ -37,4 +38,10 @@ body {
 @font-face {
   font-family: 'Breaking Bad';
   src: url('/fonts/brba.otf');
+}
+
+.username {
+  font-family: 'Breaking Bad';
+  font-size: 48px;
+  text-shadow: 5px 2.5px 10px black;
 }
