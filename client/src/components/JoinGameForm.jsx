@@ -46,7 +46,7 @@ export default function JoinGameForm() {
                         type="text"
                         placeholder="Username*"
                         required
-                        maxLength={12}
+                        maxLength={10}
                         value={username}
                         size="lg"
                         onChange={(e) => setUsername(e.target.value)}

@@ -52,7 +52,7 @@ export default function CreateGameForm() {
                         type="text"
                         placeholder="Username*"
                         required={true}
-                        maxLength={12}
+                        maxLength={10}
                         value={username}
                         size="lg"
                         onChange={(e) => setUsername(e.target.value)}
