@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { SocketContext } from "../contexts/SocketContext";
 import { useNavigate } from "react-router-dom";
@@ -25,8 +25,8 @@ export default function JoinGameForm() {
             const game = data;
 
             game.players.map((player) => {
-                if (player.id == playerState.id) { dispatch(updatePlayerState({ player: player })) };
-            })
+                if (player.id == playerState.id) { dispatch(updatePlayerState({ player: player })) }
+            });
 
             navigate(`/game/${game.id}`);
             dispatch(updateGameState({ game }));
@@ -46,7 +46,7 @@ export default function JoinGameForm() {
                         type="text"
                         placeholder="Username*"
                         required
-                        maxLength={20}
+                        maxLength={12}
                         value={username}
                         size="lg"
                         onChange={(e) => setUsername(e.target.value)}
@@ -72,4 +72,4 @@ export default function JoinGameForm() {
             </Form >
         </>
     );
-};
+}

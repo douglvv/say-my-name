@@ -24,6 +24,7 @@ const AnswerOptions = () => {
                         <Button
                             className="w-100 py-3 px-0"
                             variant="primary"
+                            disabled={playerState.isTurn}
                             value={option}
                             onClick={(e) => sendAnswer(e.target.value)}
                         >

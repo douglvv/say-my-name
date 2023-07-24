@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { SocketContext } from "../contexts/SocketContext";
 import { useNavigate } from "react-router-dom";
@@ -21,7 +21,7 @@ export default function CreateGameForm() {
         if(!username.trim()) {
             setError(true);
             return
-        };
+        }
 
         socket.emit("createGame", { username });
     }
@@ -31,7 +31,7 @@ export default function CreateGameForm() {
             const game = data;
 
             game.players.map((player) => {
-                if (player.id == playerState.id) { dispatch(updatePlayerState({ player: player })) };
+                if (player.id == playerState.id) { dispatch(updatePlayerState({ player: player })) }
             });
 
             navigate(`/game/${game.id}`);
@@ -52,7 +52,7 @@ export default function CreateGameForm() {
                         type="text"
                         placeholder="Username*"
                         required={true}
-                        maxLength={20}
+                        maxLength={12}
                         value={username}
                         size="lg"
                         onChange={(e) => setUsername(e.target.value)}
@@ -69,4 +69,4 @@ export default function CreateGameForm() {
             </Form>
         </>
     );
-};
+}
