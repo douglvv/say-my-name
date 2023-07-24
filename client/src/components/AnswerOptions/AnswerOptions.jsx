@@ -1,22 +1,37 @@
-import React from "react";
 import { useSelector } from "react-redux";
 import { Button, Row, Col } from "react-bootstrap";
+import { SocketContext } from "../../contexts/SocketContext";
+import { useContext } from "react";
 
-
-// TODO: arrumar essa parte - não popula os botoes ao iniciar o jogo
-// e dps q atualiza no vscode faz 3 requisiçoes de startGame
 const AnswerOptions = () => {
     const gameState = useSelector(state => state.game.game);
+    const playerState = useSelector(state => state.game.player);
+    const socket = useContext(SocketContext);
+
+    function sendAnswer(option) {
+        socket.emit("answer", {
+            answer: option,
+            playerId: playerState.id,
+            gameId: gameState.id
+        });
+    }
 
     return (
         <>
-           { gameState.quote &&  <Row>
-                {gameState.quote.answerOptions.map((option) => {
-                    <Col>
-                        <Button variant="primary" value={option}>{option}</Button>
+            <Row className="my-3 mx-1">
+                {gameState.quote.answerOptions.map((option, i) => (
+                    <Col key={i}>
+                        <Button
+                            className="w-100 py-3 px-0"
+                            variant="primary"
+                            value={option}
+                            onClick={(e) => sendAnswer(e.target.value)}
+                        >
+                            {option}
+                        </Button>
                     </Col>
-                })}
-            </Row>}
+                ))}
+            </Row>
         </>
     )
 };

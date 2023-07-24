@@ -1,12 +1,12 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Scoreboard from "../components/Scoreboard/Scoreboard";
 import Quote from "../components/Quote/Quote";
 import AnswerOptions from "../components/AnswerOptions/AnswerOptions";
 import { useParams } from "react-router-dom";
 import { SocketContext } from "../contexts/SocketContext";
 import { useDispatch, useSelector } from "react-redux";
-import { updateGameState, finishGame, updatePlayerState } from "../redux/gameSlice";
-import { Container, Row, Col, Badge, Card } from 'react-bootstrap'
+import { updateGameState, updatePlayerState } from "../redux/gameSlice";
+import { Container } from 'react-bootstrap'
 
 export default function GameScreen() {
     const { gameId } = useParams();
@@ -15,18 +15,6 @@ export default function GameScreen() {
     const dispatch = useDispatch();
     const socket = useContext(SocketContext);
     const [hasGameStarted, setHasGameStarted] = useState(false);
-
-
-    function startGame() {
-        if (
-            gameState.players.length === 2 &&
-            playerState.isTurn &&
-            hasGameStarted === false
-        ) {
-            socket.emit("startGame", { gameId: gameId });
-            console.log(`${playerState.id} message sent: start`);
-        }
-    }
 
     useEffect(() => {
         const handleJoinGame = (data) => {
@@ -60,8 +48,15 @@ export default function GameScreen() {
     }, [socket, dispatch, gameId, gameState, playerState])
 
     useEffect(() => {
-        startGame();
-    }, [gameState.players.length])
+        if (
+            gameState.players.length === 2 &&
+            playerState.isTurn &&
+            hasGameStarted === false
+        ) {
+            socket.emit("startGame", { gameId: gameId });
+            console.log(`${playerState.id} message sent: start`);
+        }
+    }, [gameId, gameState.players.length, hasGameStarted, playerState.id, playerState.isTurn, socket])
 
     return (
         <>

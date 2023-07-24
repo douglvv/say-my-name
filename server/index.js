@@ -9,10 +9,10 @@ const app = express();
 const server = createServer(app);
 const io = require("socket.io")(server, {
     cors: {
-      origin: "http://localhost:5173",
-      methods: ["GET", "POST"]
+        origin: "http://localhost:5173",
+        methods: ["GET", "POST"]
     }
-  });
+});
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -51,8 +51,8 @@ io.on("connection", (socket) => {
             gameRoom.game = game;
 
             // socket.emit("player", player)
-            socket.emit("createGame", game);            
-            console.log("CREATE_GAME: game:",game.id);
+            socket.emit("createGame", game);
+            console.log("CREATE_GAME: game:", game.id);
         } catch (error) {
             socket.emit("error", error);
         }
@@ -84,7 +84,7 @@ io.on("connection", (socket) => {
 
             // socket.emit("player", player)
             io.to(gameId).emit("joinGame", game)
-            console.log("JOIN_GAME: player:",player.username);
+            console.log("JOIN_GAME: player:", player.username);
             // console.log("JOIN_GAME: game:",game);
         } catch (error) {
             socket.emit("error", { message: error.message });
@@ -113,15 +113,18 @@ io.on("connection", (socket) => {
     })
 
     socket.on("answer", async (data) => {
-        const gameId = data.gameId;
+        const { answer, playerId, gameId } = data
         const game = io.sockets.adapter.rooms.get(gameId).game;
         const players = game.players;
 
-        players.forEach((player) => { // Altera os turnos
-            player.isTurn = !player.isTurn;
-        })
+        if (isAnswerCorrect(game.quote, answer)) {
+            // Adiciona 100 pontos se for a resposta correta
+            players.find((player) => player.id === playerId).points += 100;
+        }
 
         if (game.quotesLeft == 0) return io.to(gameId).emit("finish", game);
+
+        players.forEach((player) => { player.isTurn = !player.isTurn }) // Altera os turnos
 
         const quote = await fetchQuote(game);
         game.quote = quote
@@ -129,6 +132,7 @@ io.on("connection", (socket) => {
         game.quotesLeft--;
 
         io.to(gameId).emit("update", game);
+        console.log("newQuote: ", quote);
     })
 })
 
@@ -164,6 +168,19 @@ async function fetchQuote(game) {
         console.log(error.message)
         return null
     }
+}
+
+/**
+ * 
+ * @param {Object} the game's quote object
+ * @param {String} answer 
+ * @returns {Boolean} true if is correct, false if is incorrect
+ */
+function isAnswerCorrect(quote, answer) {
+    const correctAnswer = quote.answer;
+
+    if (answer === correctAnswer) return true;
+    else return false;
 }
 
 const PORT = 3001;
