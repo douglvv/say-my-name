@@ -24,7 +24,6 @@ io.on("connection", (socket) => {
 
     socket.on("createGame", (data) => {
         try {
-            // console.log("create message:", data)
             const username = data.username;
 
             if (!username) return socket.emit("error", { message: "No username provided." })
@@ -53,7 +52,7 @@ io.on("connection", (socket) => {
 
             // socket.emit("player", player)
             socket.emit("createGame", game);            
-            console.log("CREATE_GAME: game:",game);
+            console.log("CREATE_GAME: game:",game.id);
         } catch (error) {
             socket.emit("error", error);
         }
@@ -61,7 +60,6 @@ io.on("connection", (socket) => {
 
     socket.on("joinGame", (data) => {
         try {
-            console.log("join message:", data)
             const { username, gameId } = data;
 
             const gameRoom = io.sockets.adapter.rooms.get(gameId);
@@ -86,7 +84,7 @@ io.on("connection", (socket) => {
 
             // socket.emit("player", player)
             io.to(gameId).emit("joinGame", game)
-            console.log("JOIN_GAME: player:",player);
+            console.log("JOIN_GAME: player:",player.username);
             // console.log("JOIN_GAME: game:",game);
         } catch (error) {
             socket.emit("error", { message: error.message });
@@ -108,6 +106,7 @@ io.on("connection", (socket) => {
 
             io.to(gameId).emit("startGame");
             io.to(gameId).emit("update", game);
+            console.log("game started, quote:", game.quote.quote);
         } catch (error) {
             socket.emit("error", { message: error.message });
         }
