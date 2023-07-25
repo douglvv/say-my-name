@@ -1,12 +1,10 @@
 import { useContext, useEffect, useState } from "react";
-import Scoreboard from "../components/Scoreboard/Scoreboard";
-import Quote from "../components/Quote/Quote";
-import AnswerOptions from "../components/AnswerOptions/AnswerOptions";
 import { useParams } from "react-router-dom";
 import { SocketContext } from "../contexts/SocketContext";
 import { useDispatch, useSelector } from "react-redux";
 import { updateGameState, updatePlayerState } from "../redux/gameSlice";
 import { Container } from 'react-bootstrap'
+import Game from "../components/Game";
 
 export default function GameScreen() {
     const { gameId } = useParams();
@@ -55,7 +53,6 @@ export default function GameScreen() {
             hasGameStarted === false
         ) {
             socket.emit("startGame", { gameId: gameId });
-            console.log(`${playerState.id} message sent: start`);
         }
     }, [gameId, gameState.players.length, hasGameStarted, playerState.id, playerState.isTurn, socket])
 
@@ -64,9 +61,7 @@ export default function GameScreen() {
             <Container className="vh-100">
                 {hasGameStarted ? (
                     <>
-                        <Scoreboard />
-                        <Quote />
-                        <AnswerOptions />
+                    <Game />
                     </>
 
                 ) : (

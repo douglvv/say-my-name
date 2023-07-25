@@ -121,7 +121,7 @@ io.on("connection", (socket) => {
             players.find((player) => player.id === playerId).points += 100;
         }
 
-        if (game.quotesLeft == 0) return io.to(gameId).emit("finish", game);
+        if (game.quotesLeft == 0) return io.to(gameId).emit("finishGame", game);
 
         players.forEach((player) => { player.isTurn = !player.isTurn }) // Altera os turnos
 
@@ -133,7 +133,7 @@ io.on("connection", (socket) => {
         io.to(gameId).emit("update", game);
         console.log("newQuote: ", quote);
     })
-})
+});
 
 async function fetchQuote(game) {
     try {
@@ -171,7 +171,7 @@ async function fetchQuote(game) {
 
 /**
  * 
- * @param {Object} the game's quote object
+ * @param {Object} quote object
  * @param {String} answer 
  * @returns {Boolean} true if is correct, false if is incorrect
  */
