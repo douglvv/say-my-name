@@ -24,7 +24,7 @@ export default function GameScreen() {
         const handleUpdateGame = (data) => {
             const updatedGame = data;
 
-            console.log(updatedGame);
+            // console.log(updatedGame);
 
             updatedGame.players.forEach((player) => {
                 if (player.id == playerState.id) dispatch(updatePlayerState({ player: player }));
@@ -32,7 +32,8 @@ export default function GameScreen() {
 
             dispatch(updateGameState({ game: updatedGame }));
         }
-        const handleStartGame = () => {
+        const handleStartGame = (data) => {
+            handleUpdateGame(data);
             setHasGameStarted(true);
         };
 

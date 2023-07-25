@@ -104,8 +104,8 @@ io.on("connection", (socket) => {
             game.quotesLeft--;
             // // console.log(game);
 
-            io.to(gameId).emit("startGame");
-            io.to(gameId).emit("update", game);
+            // io.to(gameId).emit("startGame");
+            io.to(gameId).emit("startGame", game);
             console.log("game started, quote:", game.quote.quote);
         } catch (error) {
             socket.emit("error", { message: error.message });
