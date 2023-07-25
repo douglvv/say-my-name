@@ -25,8 +25,7 @@ export const gameSlice = createSlice({
             localStorage.setItem("game", JSON.stringify(action.payload.game))
         },
         setPlayerId: (state, action) => {
-            state.player.id = action.payload.id;
-            // console.log(state.player.id);                        
+            state.player.id = action.payload.id;                      
             localStorage.setItem("player", JSON.stringify(state.player));
         },
         updatePlayerState: (state, action) => {
