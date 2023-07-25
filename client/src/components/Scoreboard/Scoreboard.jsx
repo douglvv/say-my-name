@@ -1,6 +1,5 @@
-import React from "react";
 import styles from './styles.module.css'
-import { Row, Col, Stack, Badge } from "react-bootstrap";
+import { Row, Col, Stack } from "react-bootstrap";
 import { useSelector } from "react-redux";
 
 const Scoreboard = () => {
