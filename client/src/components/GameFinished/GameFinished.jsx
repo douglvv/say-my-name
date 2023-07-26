@@ -20,37 +20,35 @@ const GameFinished = () => {
         setPlayer2(gameState.players[1]);
 
         checkResult(player1, player2);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
 
     return (
-        <>
-            <Row>
-                <Col className={`p-2 ${styles.wrapper}`}>
+        <div className="justify-content-between m-3">
+            <Row className="mb-3">
+                <Col className={`mx-2 p-2 ${styles.wrapper}`}>
                     <Stack>
-                        <h4 className="username">Game Finished!</h4>
-                        <h5>{gameResult}</h5>
+                        <h4 className="username">Game Finished</h4>
+                        <h2>{gameResult}</h2>
                     </Stack>
                 </Col>
             </Row>
-            <Row>
-                <Col md={5} className={`p-2 ${styles.wrapper}`}>
+            <Row className="mb-3">
+                <Col className={`mx-2 p-2 ${styles.wrapper}`}>
                     <Stack>
                         <h4>{player1.username}</h4>
-                        <h5>{player1.points}</h5>
+                        <h5>{player1.points} points</h5>
                     </Stack>
                 </Col>
-                <Col md={2} className={`p-2 ${styles.wrapper}`}>
-                    <h4>x</h4>
-                </Col>
-                <Col md={5} className={`p-2 ${styles.wrapper}`}>
+                <Col className={`mx-2 p-2 ${styles.wrapper}`}>
                     <Stack>
                         <h4>{player2.username}</h4>
-                        <h5>{player2.points}</h5>
+                        <h5>{player2.points} points</h5>
                     </Stack>
                 </Col>
             </Row>
-        </>
+        </div>
     )
 }
 
