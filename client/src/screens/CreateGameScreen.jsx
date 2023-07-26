@@ -1,4 +1,3 @@
-import React from "react";
 import { Row, Col } from "react-bootstrap";
 import CreateGameForm from "../components/CreateGameForm";
 
@@ -14,4 +13,4 @@ export default function CreateGameScreen() {
             </Row>
         </div>
     );
-};
+}

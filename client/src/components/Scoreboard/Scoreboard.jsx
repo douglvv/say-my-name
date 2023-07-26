@@ -20,6 +20,7 @@ const Scoreboard = () => {
                         {
                             gameState.players.map((player) => (
                                 player.isTurn ?
+                                    // eslint-disable-next-line react/no-unescaped-entities
                                     <h4 key={player.id}> {player.username}'s turn</h4> :
                                     null
                             ))

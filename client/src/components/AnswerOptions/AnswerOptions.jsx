@@ -25,16 +25,17 @@ const AnswerOptions = () => {
     const [buttonsDisabled, setButtonsDisabled] = useState(!playerState.isTurn);
     const socket = useContext(SocketContext);
 
-    function sendAnswer(option) { 
+    function sendAnswer(option) {
         setButtonsDisabled(true);
-        
+
         if (option === gameState.quote.answer) {
             notification.addNotification({
                 ...notificationPreset,
                 title: "Correct! +100",
                 message: `The answer is ${gameState.quote.answer}`
             });
-        } else {
+        }
+        else {
             notification.addNotification({
                 ...notificationPreset,
                 title: "Wrong!",
@@ -42,18 +43,19 @@ const AnswerOptions = () => {
                 type: "danger"
             });
         }
+
         setTimeout(() => {
             socket.emit("answer", {
                 answer: option,
                 playerId: playerState.id,
                 gameId: gameState.id
             });
-        }, 3000)
+        }, 3000);
     }
 
     useEffect(() => {
         setButtonsDisabled(!playerState.isTurn);
-    },[playerState]);
+    }, [playerState]);
 
     return (
         <>

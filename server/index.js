@@ -121,7 +121,7 @@ io.on("connection", (socket) => {
             players.find((player) => player.id === playerId).points += 100;
         }
 
-        if (game.quotesLeft == 0) return io.to(gameId).emit("finishGame", game);
+        if (game.quotesLeft == 0) return io.to(gameId).emit("finishGame", {game: game});
 
         players.forEach((player) => { player.isTurn = !player.isTurn }) // Altera os turnos
 
