@@ -36,7 +36,7 @@ const GameFinishedButtons = () => {
             <Col>
                 <Button
                     className="w-100 py-3 px-0"
-                    variant="secondary"
+                    variant="danger"
                     disabled={false}
                     onClick={quit}
                 >
