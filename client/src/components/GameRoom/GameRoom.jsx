@@ -2,7 +2,7 @@ import { Navbar, Container, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useContext, useEffect, useRef } from "react";
 import { useClipboard } from 'use-clipboard-copy';
-import { FiCopy, FiCheck } from 'react-icons/fi';
+import { FiCopy, FiCheck, FiUser } from 'react-icons/fi';
 import styles from './styles.module.css'
 import { SocketContext } from "../../contexts/SocketContext";
 import { updateGameState } from "../../redux/gameSlice";
@@ -37,9 +37,10 @@ const GameRoom = () => {
                 <Container className="justify-content-between">
                     <Navbar.Brand className="text-light">Game Room</Navbar.Brand>
                     <Button
+                        variant="secondary"
                         onClick={() => socket.emit("quitRoom", { gameId: gameState.id, playerId: socket.id })}
                     >
-                        Quit
+                       Quit
                     </Button>
                 </Container>
             </Navbar>
@@ -67,7 +68,7 @@ const GameRoom = () => {
                     {gameState.players.map((player) => (
                         <li key={player.id} className="list-unstyled-item">
                             <div className={`${styles.wrapper} mt-1 m-3 p-2`}>
-                                <p>{player.username} connected.</ p>
+                                <p><FiUser /> {player.username} connected.</ p>
                             </div>
                         </li>
                     ))}

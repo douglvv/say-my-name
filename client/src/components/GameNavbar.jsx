@@ -11,6 +11,7 @@ const GameNavbar = () => {
             <Container className="justify-content-between">
                 <Navbar.Brand className="text-light">Game Room</Navbar.Brand>
                 <Button
+                    variant="secondary"
                     onClick={() => socket.emit("quitGame", { gameId: gameState.id })}
                 >
                     Quit

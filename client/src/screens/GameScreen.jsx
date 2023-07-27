@@ -7,7 +7,6 @@ import { Container } from 'react-bootstrap'
 import Game from "../components/Game";
 import GameRoom from "../components/GameRoom/GameRoom";
 
-// TODO: adicionar navbar com opçao de sair do jogo
 // TODO: game room screen enquanto aguarda o segundo player
 // TODO: adicionar um log com o histório de cada turno, frase,
 // resposta, player, resposta escolhida etc. Ao final de cada
