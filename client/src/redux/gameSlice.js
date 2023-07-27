@@ -29,13 +29,8 @@ export const gameSlice = createSlice({
             localStorage.setItem("player", JSON.stringify(state.player));
         },
         updatePlayerState: (state, action) => {
-            state.player = action.payload.player;
-            // console.log(state.player);            
+            state.player = action.payload.player;     
             localStorage.setItem("player", JSON.stringify(action.payload.player))
-        },
-        finishGame: (state) => {
-            state.game = initialState;
-            localStorage.removeItem("game");
         }
     }
 });

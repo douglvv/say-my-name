@@ -33,8 +33,22 @@ const GameFinishedButtons = () => {
         }
         socket.on("quitGame", handleQuit)
 
+        const handlePlayAgain = (data) => {
+            const game = data;
+
+            game.players.forEach((player) => {
+                if (player.id == playerState.id) dispatch(updatePlayerState({ player: player }));
+            })
+
+            dispatch(updateGameState({ game: game }));
+
+            navigate(`/game/${game.id}`);
+        }
+        socket.on("playAgain", handlePlayAgain);
+
         return(() => {
             socket.off("quitGame", handleQuit);
+            socket.off("playAgain", handlePlayAgain);
         })
     }, [socket, navigate, dispatch, playerState.id, gameState.id])
 

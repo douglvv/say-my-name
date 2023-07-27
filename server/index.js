@@ -36,7 +36,7 @@ io.on("connection", (socket) => {
                 players: [],
                 quote: {},
                 quoteHistory: [],
-                quotesLeft: 4,
+                quotesLeft: 20,
             }
 
             const player = {
@@ -91,7 +91,6 @@ io.on("connection", (socket) => {
 
     socket.on("startGame", async (data) => {
         try {
-            // // console.log("startgame")
             const gameId = data.gameId;
             const gameRoom = io.sockets.adapter.rooms.get(gameId);
             const game = gameRoom.game;
@@ -100,7 +99,6 @@ io.on("connection", (socket) => {
             game.quote = quote
             game.quoteHistory.push(quote);
             game.quotesLeft--;
-            // // console.log(game);
 
             io.to(gameId).emit("startGame", game);
             console.log("game started, quote:", game.quote.quote);
@@ -153,6 +151,22 @@ io.on("connection", (socket) => {
         io.to(gameId).emit("quitGame", {game: game, playerId: socket.id});
         socket.leave(gameId);
         console.log(`Player ${socket.username} left the game ${gameId}`);
+    })
+
+    socket.on("playAgain", (data) => {
+        const gameId = data.gameId;
+        const game = io.sockets.adapter.rooms.get(gameId).game;
+        const players = game.players
+
+        players.forEach((player) => {
+            player.points = 0;            
+        });
+
+        game.quote = {};
+        game.quoteHistory = [];
+        game.quotesLeft = 20;
+        
+        io.to(gameId).emit("playAgain", game);
     })
 });
 
