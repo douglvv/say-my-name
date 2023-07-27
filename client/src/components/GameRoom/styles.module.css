@@ -1,0 +1,20 @@
+.iconButton {
+    background: rgba(54, 148, 87, 0.3);
+    border: 1.75px solid rgba(54, 148, 87);
+    border-radius: 12.5%;
+    padding: 0.5rem;
+    font-size: large;
+}
+.iconButton:hover {
+    transform: scale(1.075);
+    transition: .25s;
+}
+
+.wrapper {
+    background: rgba(54, 148, 87, 0.3);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(54, 148, 87, 1);
+}

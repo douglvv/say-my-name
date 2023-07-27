@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateGameState, updatePlayerState } from "../redux/gameSlice";
 import { Container } from 'react-bootstrap'
 import Game from "../components/Game";
+import GameRoom from "../components/GameRoom/GameRoom";
 
 // TODO: adicionar navbar com opçao de sair do jogo
 // TODO: game room screen enquanto aguarda o segundo player
@@ -41,13 +42,13 @@ export default function GameScreen() {
         const handleFinishGame = (data) => {
             const game = data.game;
 
-            dispatch(updateGameState({game: game}));
-            
+            dispatch(updateGameState({ game: game }));
+
             game.players.forEach((player) => {
                 if (player.id == playerState.id) dispatch(updatePlayerState({ player: player }));
             });
 
-            navigate(`/game/${gameId}/finish`);          
+            navigate(`/game/${gameId}/finish`);
         }
 
         socket.on("joinGame", handleJoinGame);
@@ -77,18 +78,9 @@ export default function GameScreen() {
         <>
             <Container className="vh-100">
                 {hasGameStarted ? (
-                    <>
                     <Game />
-                    </>
-
                 ) : (
-                    <ul>
-                        {gameState.players.map((player) => (
-                            <li key={player.id}>
-                                <p>{player.username} connected.</p>
-                            </li>
-                        ))}
-                    </ul>
+                    <GameRoom />
                 )}
             </Container>
         </>
