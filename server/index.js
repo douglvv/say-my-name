@@ -134,9 +134,10 @@ io.on("connection", (socket) => {
         const gameId = data.gameId;
         const game = io.sockets.adapter.rooms.get(gameId).game;
 
-        if(game.players.length === 1) {
-            socket.emit("quitGame", {game: game, playerId: socket.id});
+        if (game.players.length === 1) {
+            socket.emit("quitGame", { game: game, playerId: socket.id });
             socket.leave(gameId);
+            return
         }
 
         const playerIndex = game.players.findIndex((player) => player.id === socket.id);
@@ -148,9 +149,27 @@ io.on("connection", (socket) => {
         game.players[0].isTurn = true;
         game.players[0].points = 0;
 
-        io.to(gameId).emit("quitGame", {game: game, playerId: socket.id});
+        io.to(gameId).emit("quitGame", { game: game, playerId: socket.id });
         socket.leave(gameId);
         console.log(`Player ${socket.username} left the game ${gameId}`);
+    })
+
+    socket.on("quitRoom", (data) => {
+        const { gameId, playerId } = data;
+        const game = io.sockets.adapter.rooms.get(gameId).game;
+
+        if (game.players.length === 1) {
+            socket.emit("quitRoom", game);
+            socket.leave(gameId);
+            return
+        }
+
+        const playerIndex = game.players.findIndex((player) => player.id === playerId);
+        game.players.splice(playerIndex, 1);
+
+
+        socket.to(gameId).emit("quitRoom", game)
+        socket.leave(gameId);
     })
 
     socket.on("playAgain", (data) => {
@@ -159,13 +178,13 @@ io.on("connection", (socket) => {
         const players = game.players
 
         players.forEach((player) => {
-            player.points = 0;            
+            player.points = 0;
         });
 
         game.quote = {};
         game.quoteHistory = [];
         game.quotesLeft = 20;
-        
+
         io.to(gameId).emit("playAgain", game);
     })
 });
