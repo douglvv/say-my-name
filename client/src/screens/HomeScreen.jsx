@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import { SocketContext } from "../contexts/SocketContext";
-import { InputGroup, Form, Button, Col, Row } from "react-bootstrap";
+import { Button, Col, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux'
-import { updateGameState, updatePlayerState, setPlayerId } from '../redux/gameSlice';
+import { setPlayerId } from '../redux/gameSlice';
 
 const HomeScreen = () => {
     const [isConnected, setIsConnected] = useState(false);

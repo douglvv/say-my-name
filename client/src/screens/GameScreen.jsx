@@ -28,8 +28,6 @@ export default function GameScreen() {
         const handleUpdateGame = (data) => {
             const updatedGame = data;
 
-            // console.log(updatedGame);
-
             updatedGame.players.forEach((player) => {
                 if (player.id == playerState.id) dispatch(updatePlayerState({ player: player }));
             })
@@ -42,7 +40,6 @@ export default function GameScreen() {
         };
         const handleFinishGame = (data) => {
             const game = data.game;
-            console.log(game);
 
             dispatch(updateGameState({game: game}));
             
@@ -50,7 +47,7 @@ export default function GameScreen() {
                 if (player.id == playerState.id) dispatch(updatePlayerState({ player: player }));
             });
 
-            navigate(`/game/${gameId}/finish`);            
+            navigate(`/game/${gameId}/finish`);          
         }
 
         socket.on("joinGame", handleJoinGame);

@@ -82,10 +82,8 @@ io.on("connection", (socket) => {
 
             game.players.push(player);
 
-            // socket.emit("player", player)
             io.to(gameId).emit("joinGame", game)
             console.log("JOIN_GAME: player:", player.username);
-            // console.log("JOIN_GAME: game:",game);
         } catch (error) {
             socket.emit("error", { message: error.message });
         }
@@ -121,7 +119,7 @@ io.on("connection", (socket) => {
             players.find((player) => player.id === playerId).points += 100;
         }
 
-        if (game.quotesLeft == 0) return io.to(gameId).emit("finishGame", {game: game});
+        if (game.quotesLeft == 0) return io.to(gameId).emit("finishGame", { game: game });
 
         players.forEach((player) => { player.isTurn = !player.isTurn }) // Altera os turnos
 
@@ -131,19 +129,29 @@ io.on("connection", (socket) => {
         game.quotesLeft--;
 
         io.to(gameId).emit("update", game);
-        console.log("newQuote: ", quote);
+        console.log("newQuote: ", quote.quote);
     })
 
     socket.on("quitGame", (data) => {
         const gameId = data.gameId;
-        const game = io.sockets.adapter.rooms.get(gameId);
+        const game = io.sockets.adapter.rooms.get(gameId).game;
 
-        socket.leave(gameId);
+        if(game.players.length === 1) {
+            socket.emit("quitGame", {game: game, playerId: socket.id});
+            socket.leave(gameId);
+        }
 
         const playerIndex = game.players.findIndex((player) => player.id === socket.id);
         game.players.splice(playerIndex, 1);
 
-        io.to(gameId).emit("quitGame", {game: game});
+        game.quote = {};
+        game.quoteHistory = [];
+        game.quotesLeft = 20;
+        game.players[0].isTurn = true;
+        game.players[0].points = 0;
+
+        io.to(gameId).emit("quitGame", {game: game, playerId: socket.id});
+        socket.leave(gameId);
         console.log(`Player ${socket.username} left the game ${gameId}`);
     })
 });

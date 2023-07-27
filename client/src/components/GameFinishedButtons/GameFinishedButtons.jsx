@@ -1,15 +1,16 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { Row, Col, Button } from "react-bootstrap"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom";
 import { SocketContext } from "../../contexts/SocketContext";
-
+import { updateGameState, updatePlayerState } from "../../redux/gameSlice";
 
 const GameFinishedButtons = () => {
     const gameState = useSelector((state) => state.game.game);
     const playerState = useSelector((state) => state.game.player);
     const navigate = useNavigate();
     const socket = useContext(SocketContext);
+    const dispatch = useDispatch();
 
     const playAgain = () => {
         socket.emit("playAgain", { gameId: gameState.id })
@@ -17,9 +18,25 @@ const GameFinishedButtons = () => {
 
     const quit = () => {
         socket.emit("quitGame", { gameId: gameState.id })
-
-        navigate('/');
     }
+
+    useEffect(() => {
+        const handleQuit = (data) => {
+            console.log(data)
+            const {game, playerId} = data;
+
+            if(playerId === playerState.id) return navigate('/');
+
+            dispatch(updateGameState({game: game}));
+            dispatch(updatePlayerState({player: game.players[0]}))
+            navigate(`/game/${game.id}`);           
+        }
+        socket.on("quitGame", handleQuit)
+
+        return(() => {
+            socket.off("quitGame", handleQuit);
+        })
+    }, [socket, navigate, dispatch, playerState.id, gameState.id])
 
     return (
         <Row className="my-3 mx-1">

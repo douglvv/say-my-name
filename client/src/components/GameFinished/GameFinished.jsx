@@ -5,20 +5,17 @@ import { useEffect, useState } from "react";
 
 const GameFinished = () => {
     const gameState = useSelector((state) => state.game.game);
-    const [player1, setPlayer1] = useState({});
-    const [player2, setPlayer2] = useState({});
+    const player1 = gameState.players[0];
+    const player2 = gameState.players[1];
     const [gameResult, setGameResult] = useState("");
 
     const checkResult = (player1, player2) => {
-        if (player1.points === player2.points) return setGameResult("It's a draw!");
+        if (player1.points == player2.points) return setGameResult("It's a draw!");
         else if (player1.points > player2.points) return setGameResult(`${player1.username} won!`);
         else return setGameResult(`${player2.username} won!`);
     };
 
     useEffect(() => {
-        setPlayer1(gameState.players[0]);
-        setPlayer2(gameState.players[1]);
-
         checkResult(player1, player2);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
