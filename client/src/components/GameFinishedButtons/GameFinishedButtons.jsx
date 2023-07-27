@@ -22,7 +22,6 @@ const GameFinishedButtons = () => {
 
     useEffect(() => {
         const handleQuit = (data) => {
-            console.log(data)
             const {game, playerId} = data;
 
             if(playerId === playerState.id) return navigate('/');

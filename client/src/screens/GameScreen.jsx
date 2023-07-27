@@ -50,17 +50,29 @@ export default function GameScreen() {
 
             navigate(`/game/${gameId}/finish`);
         }
+        const handleQuit = (data) => {
+            const {game, playerId} = data;
+    
+            if(playerId === playerState.id) return navigate('/');
+    
+            dispatch(updateGameState({game: game}));
+            dispatch(updatePlayerState({player: game.players[0]}))
+            setHasGameStarted(false);
+        }
 
+        
         socket.on("joinGame", handleJoinGame);
         socket.on("update", handleUpdateGame);
         socket.on("startGame", handleStartGame);
         socket.on("finishGame", handleFinishGame);
+        socket.on("quitGame", handleQuit)
 
         return (() => {
             socket.off("joinGame", handleJoinGame)
             socket.off("update", handleUpdateGame);
             socket.off("startGame", handleStartGame);
             socket.off("finishGame", handleFinishGame);
+            socket.off("quitGame", handleQuit)
         })
     }, [socket, dispatch, gameId, gameState, playerState, navigate])
 

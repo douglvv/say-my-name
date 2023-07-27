@@ -1,4 +1,4 @@
-import { Navbar, Container, Card, Button } from "react-bootstrap";
+import { Navbar, Container, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useContext, useEffect, useRef } from "react";
 import { useClipboard } from 'use-clipboard-copy';
@@ -15,10 +15,6 @@ const GameRoom = () => {
     const socket = useContext(SocketContext);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-
-    const quit = () => {
-        socket.emit("quitRoom", { gameId: gameState.id, playerId: socket.id });
-    }
 
     useEffect(() => {
         const handleQuitRoom = (data) => {
@@ -40,7 +36,11 @@ const GameRoom = () => {
             <Navbar >
                 <Container className="justify-content-between">
                     <Navbar.Brand className="text-light">Game Room</Navbar.Brand>
-                    <Button onClick={quit}>Quit</Button>
+                    <Button
+                        onClick={() => socket.emit("quitRoom", { gameId: gameState.id, playerId: socket.id })}
+                    >
+                        Quit
+                    </Button>
                 </Container>
             </Navbar>
 

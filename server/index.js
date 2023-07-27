@@ -150,8 +150,8 @@ io.on("connection", (socket) => {
         game.players[0].points = 0;
 
         io.to(gameId).emit("quitGame", { game: game, playerId: socket.id });
-        socket.leave(gameId);
         console.log(`Player ${socket.username} left the game ${gameId}`);
+        socket.leave(gameId);
     })
 
     socket.on("quitRoom", (data) => {
