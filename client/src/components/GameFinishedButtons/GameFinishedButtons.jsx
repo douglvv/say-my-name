@@ -16,7 +16,7 @@ const GameFinishedButtons = () => {
     }
 
     const quit = () => {
-        socket.emit("quit", { gameId: gameState.id })
+        socket.emit("quitGame", { gameId: gameState.id })
 
         navigate('/');
     }
@@ -27,7 +27,7 @@ const GameFinishedButtons = () => {
                 <Button
                     className="w-100 py-3 px-0"
                     variant="primary"
-                    disabled={!playerState.isTurn}
+                    disabled={playerState.isTurn}
                     onClick={playAgain}
                 >
                     Play Again

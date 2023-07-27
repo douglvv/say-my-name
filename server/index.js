@@ -36,7 +36,7 @@ io.on("connection", (socket) => {
                 players: [],
                 quote: {},
                 quoteHistory: [],
-                quotesLeft: 20,
+                quotesLeft: 4,
             }
 
             const player = {
@@ -132,6 +132,19 @@ io.on("connection", (socket) => {
 
         io.to(gameId).emit("update", game);
         console.log("newQuote: ", quote);
+    })
+
+    socket.on("quitGame", (data) => {
+        const gameId = data.gameId;
+        const game = io.sockets.adapter.rooms.get(gameId);
+
+        socket.leave(gameId);
+
+        const playerIndex = game.players.findIndex((player) => player.id === socket.id);
+        game.players.splice(playerIndex, 1);
+
+        io.to(gameId).emit("quitGame", {game: game});
+        console.log(`Player ${socket.username} left the game ${gameId}`);
     })
 });
 
