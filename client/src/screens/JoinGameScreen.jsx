@@ -1,4 +1,3 @@
-import React from "react";
 import { Row, Col } from "react-bootstrap";
 import JoinGameForm from "../components/JoinGameForm";
 
@@ -14,4 +13,4 @@ export default function JoinGameScreen() {
             </Row>
         </div>
     );
-};
+}
