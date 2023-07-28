@@ -197,8 +197,8 @@ async function fetchQuote(game) {
         const response = await axios.get('https://api.breakingbadquotes.xyz/v1/quotes');
         const data = await response.data[0];
 
-        let frase = data.quote
-        let answer = data.author
+        let frase = data.quote;
+        let answer = data.author;
 
         for (let i = 0; i < game.quoteHistory.length - 1; i++) { // verifica se a frase já foi usada
             if (frase == game.quoteHistory[i].quote) return fetchQuote(game);
@@ -207,7 +207,7 @@ async function fetchQuote(game) {
         const answerIndex = allAuthors.indexOf(answer)
         allAuthors.splice(answerIndex, 1)
 
-        for (let i = allAuthors.length - 1; i > 0; i--) {
+        for (let i = allAuthors.length - 1; i > 0; i--) { // Randomiza as opçoes de resposta
             const j = Math.floor(Math.random() * (i + 1));
             [allAuthors[i], allAuthors[j]] = [allAuthors[j], allAuthors[i]];
         }

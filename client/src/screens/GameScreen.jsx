@@ -7,10 +7,6 @@ import { Container } from 'react-bootstrap'
 import Game from "../components/Game";
 import GameRoom from "../components/GameRoom/GameRoom";
 
-// TODO: game room screen enquanto aguarda o segundo player
-// TODO: adicionar um log com o histório de cada turno, frase,
-// resposta, player, resposta escolhida etc. Ao final de cada
-// turno adiciona ao log.
 export default function GameScreen() {
     const { gameId } = useParams();
     const gameState = useSelector((state) => state.game.game);
@@ -64,7 +60,7 @@ export default function GameScreen() {
         socket.on("update", handleUpdateGame);
         socket.on("startGame", handleStartGame);
         socket.on("finishGame", handleFinishGame);
-        socket.on("quitGame", handleQuit)
+        socket.on("quitGame", handleQuit);
 
         return (() => {
             socket.off("joinGame", handleJoinGame)
