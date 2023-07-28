@@ -53,4 +53,5 @@ Talvez seja necessário alterar em server/index.js, na linha 12, onde é instanc
 
 By this point the app will be running in React's default port.
 Maybe it will be necessary  to alter in server/index.js, in line 12, on cores, the client's requisitions origin to the url where the react app is running.
-[⬆ Voltar ao topo](#appControleFabrica)<br>
+<br>
+[⬆ Voltar ao topo](#say-my-name)<br>
